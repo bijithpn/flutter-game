@@ -58,7 +58,7 @@ class LoggerInterceptor extends Interceptor {
   }
 
   @override
-  Future onError(DioError err, handler) async {
+  Future onError(DioException err, handler) async {
     if (error) {
       _printKVError("", '*** DioError ***:');
       _printKVError("", 'uri: ${err.requestOptions.uri}');
