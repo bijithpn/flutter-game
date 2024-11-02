@@ -33,14 +33,14 @@ class SudokuRepository {
     return null;
   }
 
-  Future<bool> verifySudoku(String sudokuData) async {
+  Future<Map<String, dynamic>> verifySudoku(String sudokuData) async {
     try {
       var response = await dio.get(
         APIEndpoint.sudokuVerifier,
         queryParameters: {"task": sudokuData},
       );
       if (response.statusCode == 200) {
-        return response.data['isValid'] ?? false;
+        return response.data as Map<String, dynamic>;
       }
     } on DioException catch (e) {
       if (e.type == DioExceptionType.cancel) {
@@ -53,6 +53,6 @@ class SudokuRepository {
     } catch (e) {
       throw ServerException(e.toString(), null);
     }
-    return false;
+    return {};
   }
 }

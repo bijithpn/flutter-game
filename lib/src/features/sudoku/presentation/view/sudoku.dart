@@ -46,7 +46,20 @@ class _SudokuViewState extends State<SudokuView> {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return SudokuCompleteWidget(sudokuBloc: sudokuBloc);
+                return SudokuDialogWidget(
+                  onTap: () {
+                    Navigator.pop(context);
+                    sudokuBloc.add(SudokuGenerateEvent());
+                  },
+                  buttonIcon: Icon(
+                    Icons.celebration,
+                    color: Colors.black,
+                  ),
+                  buttonTitle: "Play Again",
+                  title: "Congratulations!",
+                  message:
+                      "Well done! You've successfully completed the Sudoku puzzle. Every cell is correctly filled.",
+                );
               },
             );
           }
@@ -55,16 +68,48 @@ class _SudokuViewState extends State<SudokuView> {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return SudokuValidationErrorWidget(sudokuBloc: sudokuBloc);
+                return SudokuDialogWidget(
+                  title: "Invalid Puzzle Submission",
+                  message: state.message,
+                  buttonIcon: Icon(
+                    Icons.error_outline,
+                    color: Colors.black,
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  buttonTitle: "Review Errors",
+                );
+              },
+            );
+          }
+          if (state is SudokuValidationError) {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext context) {
+                return SudokuDialogWidget(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  buttonIcon: Icon(
+                    Icons.edit,
+                    color: Colors.black,
+                  ),
+                  title: "Incomplete Puzzle",
+                  message: state.message,
+                  buttonTitle: "Continue Editing",
+                );
               },
             );
           }
         },
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: SudokuAppBar(controllers: controllers),
           body: BlocBuilder<SudokuBloc, SudokuState>(
             builder: (context, state) {
-              if (state is SudokuGenrated) {
+              if (state is SudokuGenerated) {
                 if (state.sudoku != null) {
                   SudokuHelper.initializeSudokuGrid(
                       state.sudoku!.task, controllers);

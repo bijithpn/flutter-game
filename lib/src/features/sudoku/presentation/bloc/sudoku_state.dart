@@ -11,10 +11,10 @@ final class SudokuInitial extends SudokuState {}
 
 final class SudokuLoading extends SudokuState {}
 
-final class SudokuGenrated extends SudokuState {
+final class SudokuGenerated extends SudokuState {
   final Sudoku? sudoku;
 
-  const SudokuGenrated({required this.sudoku});
+  const SudokuGenerated({required this.sudoku});
 }
 
 final class SudokuVerify extends SudokuState {
@@ -31,4 +31,10 @@ final class SudokuError extends SudokuState {
   final String message;
 
   const SudokuError({required this.message});
+}
+
+final class SudokuValidationError extends SudokuState {
+  final String message;
+
+  const SudokuValidationError({required this.message});
 }

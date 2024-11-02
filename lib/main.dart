@@ -65,7 +65,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                 theme: ThemeData.dark().copyWith(),
                 debugShowCheckedModeBanner: false,
                 navigatorKey: navigatorKey,
-                initialRoute: '/',
+                initialRoute: '/sudoku',
               );
             },
           );

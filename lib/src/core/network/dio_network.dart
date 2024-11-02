@@ -14,7 +14,7 @@ class DioNetwork {
 
   static void initDio() {
     //todo update the api url
-    String apiDomain = '';
+    String apiDomain = 'https://9242-103-114-252-238.ngrok-free.app';
     assert(apiDomain.isNotEmpty, "Need to pass api url ");
     appAPI = Dio(baseOptions(APIConfig.baseUrl(apiDomain)));
     appAPI.interceptors.add(loggerInterceptor());

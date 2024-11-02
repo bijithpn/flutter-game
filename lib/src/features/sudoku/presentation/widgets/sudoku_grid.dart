@@ -6,7 +6,7 @@ import 'package:flutter_games/src/features/sudoku/presentation/bloc/sudoku_bloc.
 import 'sudoku_cell.dart';
 
 class SudokuGrid extends StatelessWidget {
-  final SudokuGenrated sudokuState;
+  final SudokuGenerated sudokuState;
   final List<List<TextEditingController>> controllers;
 
   const SudokuGrid({

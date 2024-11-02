@@ -29,22 +29,23 @@ class SudokuAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
             icon: const Icon(Icons.check),
             onPressed: () {
-              // bool isComplete = true;
-              // for (var row in controllers) {
-              //   for (var controller in row) {
-              //     if (controller.text.isEmpty || controller.text == '0') {
-              //       isComplete = false;
-              //       break;
-              //     }
-              //   }
-              //   if (!isComplete) break;
-              // }
-              // if (isComplete) {
-              var sudokuData = SudokuHelper.formatSudokuOutput(controllers);
-              sudokuBloc.add(SudokuVerifyEvent(sudokuData));
-              // } else {
-              //   sudokuBloc.add(SudokuValidateEvent());
-              // }
+              FocusScope.of(context).unfocus();
+              bool isComplete = true;
+              for (var row in controllers) {
+                for (var controller in row) {
+                  if (controller.text.isEmpty || controller.text == '0') {
+                    isComplete = false;
+                    break;
+                  }
+                }
+                if (!isComplete) break;
+              }
+              if (isComplete) {
+                var sudokuData = SudokuHelper.formatSudokuOutput(controllers);
+                sudokuBloc.add(SudokuVerifyEvent(sudokuData));
+              } else {
+                sudokuBloc.add(SudokuValidateEvent());
+              }
             }),
       ],
     );
