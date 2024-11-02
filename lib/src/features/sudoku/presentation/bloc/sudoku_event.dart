@@ -17,3 +17,5 @@ class SudokuVerifyEvent extends SudokuEvent {
   final String sudokuData;
   const SudokuVerifyEvent(this.sudokuData);
 }
+
+class SudokuValidateEvent extends SudokuEvent {}

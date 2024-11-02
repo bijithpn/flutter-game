@@ -12,7 +12,13 @@ class SudokuAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final sudokuBloc = BlocProvider.of<SudokuBloc>(context);
     return AppBar(
-      title: const Text('Sudoku'),
+      title: Text(
+        'Sudoku',
+        style: Theme.of(context)
+            .textTheme
+            .titleLarge!
+            .copyWith(fontWeight: FontWeight.bold),
+      ),
       actions: [
         IconButton(
           icon: const Icon(Icons.restart_alt),
@@ -21,12 +27,25 @@ class SudokuAppBar extends StatelessWidget implements PreferredSizeWidget {
           },
         ),
         IconButton(
-          icon: const Icon(Icons.check),
-          onPressed: () {
-            var sudokuData = SudokuHelper.formatSudokuOutput(controllers);
-            sudokuBloc.add(SudokuVerifyEvent(sudokuData));
-          },
-        ),
+            icon: const Icon(Icons.check),
+            onPressed: () {
+              // bool isComplete = true;
+              // for (var row in controllers) {
+              //   for (var controller in row) {
+              //     if (controller.text.isEmpty || controller.text == '0') {
+              //       isComplete = false;
+              //       break;
+              //     }
+              //   }
+              //   if (!isComplete) break;
+              // }
+              // if (isComplete) {
+              var sudokuData = SudokuHelper.formatSudokuOutput(controllers);
+              sudokuBloc.add(SudokuVerifyEvent(sudokuData));
+              // } else {
+              //   sudokuBloc.add(SudokuValidateEvent());
+              // }
+            }),
       ],
     );
   }

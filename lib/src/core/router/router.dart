@@ -8,6 +8,11 @@ class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     currentRoute = settings.name ?? "/";
     switch (settings.name) {
+      case '/':
+        return MaterialPageRoute(
+          settings: RouteSettings(name: settings.name),
+          builder: (_) => const HomeView(),
+        );
       case '/sudoku':
         return MaterialPageRoute(
           settings: RouteSettings(name: settings.name),

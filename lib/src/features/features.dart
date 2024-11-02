@@ -1,2 +1,14 @@
 export 'error/presentation/error.dart';
+export 'home/presentation/home.dart';
+export 'sudoku/data/model/sudoku.dart';
+export 'sudoku/data/repository/sudoku_repository.dart';
+export 'sudoku/presentation/bloc/sudoku_bloc.dart';
 export 'sudoku/presentation/view/sudoku.dart';
+export 'sudoku/presentation/widgets/instruction_widget.dart';
+export 'sudoku/presentation/widgets/sudoku_appbar_widget.dart';
+export 'sudoku/presentation/widgets/sudoku_cell.dart';
+export 'sudoku/presentation/widgets/sudoku_complete_widget.dart';
+export 'sudoku/presentation/widgets/sudoku_error.dart';
+export 'sudoku/presentation/widgets/sudoku_grid.dart';
+export 'sudoku/presentation/widgets/widgets.dart';
+export 'sudoku/sudoku_injection.dart';

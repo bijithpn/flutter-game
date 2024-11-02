@@ -50,6 +50,15 @@ class _SudokuViewState extends State<SudokuView> {
               },
             );
           }
+          if (state is SudokuError) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return SudokuValidationErrorWidget(sudokuBloc: sudokuBloc);
+              },
+            );
+          }
         },
         child: Scaffold(
           appBar: SudokuAppBar(controllers: controllers),
@@ -73,12 +82,6 @@ class _SudokuViewState extends State<SudokuView> {
                     ],
                   ),
                 );
-              }
-              if (state is SudokuError) {
-                return Center(
-                    child: Text(state.message,
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontWeight: FontWeight.bold, color: Colors.red)));
               }
               return InstructionWidget();
             },
