@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_games/src/core/styles/app_colors.dart';
 
 class SudokuCell extends StatelessWidget {
-  const SudokuCell({
+  SudokuCell({
     super.key,
     required this.controller,
     this.isPreFilled = false,
@@ -16,6 +16,7 @@ class SudokuCell extends StatelessWidget {
   final bool isPreFilled;
   final VoidCallback? updateCallback;
 
+  int backspace = 0;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -51,12 +52,20 @@ class SudokuCell extends StatelessWidget {
           textInputAction: TextInputAction.next,
           readOnly: !isPreFilled,
           enabled: isPreFilled,
+          enableInteractiveSelection: false,
           onChanged: (value) {
             if (value.isNotEmpty) {
+              backspace = 0;
               FocusScope.of(context).nextFocus();
               if (updateCallback != null) {
                 updateCallback!();
               }
+            }
+            if (value.isEmpty) {
+              backspace = backspace + 1;
+            }
+            if (backspace > 0 && index != 0) {
+              FocusScope.of(context).previousFocus();
             }
           },
           cursorColor: AppColors.primaryColor,

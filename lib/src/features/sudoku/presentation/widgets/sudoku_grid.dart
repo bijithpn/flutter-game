@@ -40,13 +40,14 @@ class SudokuGrid extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 9,
-                    childAspectRatio: 1,
+                    childAspectRatio: .91,
                   ),
                   itemCount: 81,
                   itemBuilder: (context, index) {
                     int row = index ~/ 9;
                     int col = index % 9;
                     return SudokuCell(
+                      key: ValueKey(index),
                       updateCallback: () {
                         context.read<SudokuBloc>().add(SudokuUpdateEvent(
                             SudokuHelper.getCurrentMatrixValues(controllers)));
