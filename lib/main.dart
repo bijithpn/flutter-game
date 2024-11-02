@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_games/src/core/router/router.dart';
+import 'package:flutter_games/src/core/styles/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'src/core/helper/helper.dart';
 import 'src/core/utils/injections.dart';
@@ -62,7 +65,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                 scaffoldMessengerKey: snackBarKey,
                 onGenerateRoute: AppRouter.generateRoute,
                 // theme: Helper.isDarkTheme() ? darkAppTheme : appTheme,
-                theme: ThemeData.dark().copyWith(),
+                theme: ThemeData.dark()
+                    .copyWith(primaryColor: AppColors.primaryColor),
                 debugShowCheckedModeBanner: false,
                 navigatorKey: navigatorKey,
                 initialRoute: '/sudoku',

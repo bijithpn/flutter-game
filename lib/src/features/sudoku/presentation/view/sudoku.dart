@@ -69,7 +69,7 @@ class _SudokuViewState extends State<SudokuView> {
               barrierDismissible: false,
               builder: (BuildContext context) {
                 return SudokuDialogWidget(
-                  title: "Invalid Puzzle Submission",
+                  title: "Oops!",
                   message: state.message,
                   buttonIcon: Icon(
                     Icons.error_outline,
@@ -77,8 +77,9 @@ class _SudokuViewState extends State<SudokuView> {
                   ),
                   onTap: () {
                     Navigator.pop(context);
+                    sudokuBloc.add(SudokuGenerateEvent());
                   },
-                  buttonTitle: "Review Errors",
+                  buttonTitle: "Try again",
                 );
               },
             );
@@ -89,17 +90,13 @@ class _SudokuViewState extends State<SudokuView> {
               barrierDismissible: true,
               builder: (BuildContext context) {
                 return SudokuDialogWidget(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  buttonIcon: Icon(
-                    Icons.edit,
-                    color: Colors.black,
-                  ),
-                  title: "Incomplete Puzzle",
-                  message: state.message,
-                  buttonTitle: "Continue Editing",
-                );
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    buttonIcon: state.buttonIcon,
+                    title: state.title,
+                    message: state.message,
+                    buttonTitle: state.buttonTitle);
               },
             );
           }
@@ -128,7 +125,11 @@ class _SudokuViewState extends State<SudokuView> {
                   ),
                 );
               }
-              return InstructionWidget();
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                child: InstructionWidget(),
+              );
             },
           ),
         ),

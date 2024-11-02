@@ -35,6 +35,14 @@ final class SudokuError extends SudokuState {
 
 final class SudokuValidationError extends SudokuState {
   final String message;
+  final String title;
+  final String buttonTitle;
+  final Widget buttonIcon;
 
-  const SudokuValidationError({required this.message});
+  const SudokuValidationError({
+    required this.buttonIcon,
+    required this.title,
+    required this.message,
+    required this.buttonTitle,
+  });
 }

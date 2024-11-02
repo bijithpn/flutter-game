@@ -1,7 +1,8 @@
-// sudoku_grid.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_games/src/core/helper/sudoku_helper.dart';
 
 import 'package:flutter_games/src/features/sudoku/presentation/bloc/sudoku_bloc.dart';
+import 'package:provider/provider.dart';
 
 import 'sudoku_cell.dart';
 
@@ -24,7 +25,7 @@ class SudokuGrid extends StatelessWidget {
         child: sudokuState.sudoku == null
             ? Center(
                 child: Text(
-                  "Opps! Something went wrong",
+                  "Oops! Something went wrong",
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -46,9 +47,14 @@ class SudokuGrid extends StatelessWidget {
                     int row = index ~/ 9;
                     int col = index % 9;
                     return SudokuCell(
+                      updateCallback: () {
+                        context.read<SudokuBloc>().add(SudokuUpdateEvent(
+                            SudokuHelper.getCurrentMatrixValues(controllers)));
+                      },
                       index: index,
                       controller: controllers[row][col],
-                      isPreFilled: controllers[row][col].text.isNotEmpty,
+                      isPreFilled:
+                          sudokuState.sudoku?.isEditable[row][col] ?? false,
                     );
                   },
                 ),
