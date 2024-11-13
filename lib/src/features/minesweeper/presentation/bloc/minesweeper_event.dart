@@ -17,10 +17,13 @@ class MinesweeperCellTappedEvent extends MinesweeperEvent {
     required this.column,
     this.isFlagged = false,
   });
-
   final int column;
   final bool isFlagged;
   final int row;
+}
+
+class MinesweeperGameOverEvent extends MinesweeperEvent {
+  const MinesweeperGameOverEvent();
 }
 
 class MinesweeperResetEvent extends MinesweeperEvent {}

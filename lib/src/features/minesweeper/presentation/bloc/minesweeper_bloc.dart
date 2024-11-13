@@ -1,6 +1,7 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_games/src/core/helper/minesweeper_helper.dart';
 import 'package:flutter_games/src/core/network/error/dio_error_handler.dart';
 import 'package:flutter_games/src/core/network/error/exceptions.dart';
 import 'package:flutter_games/src/features/minesweeper/data/model/minesweeper_model.dart';
@@ -15,6 +16,7 @@ class MinesweeperBloc extends HydratedBloc<MinesweeperEvent, MinesweeperState> {
     on<MinesweeperGenerateEvent>(_onGenerateMinesweeper,
         transformer: restartable());
     on<MinesweeperCellTappedEvent>(_onTapCell);
+    on<MinesweeperResetEvent>(_onResetMinesweeper);
   }
 
   final MineSweeperRepository mineSweeperRepository;
@@ -63,6 +65,25 @@ class MinesweeperBloc extends HydratedBloc<MinesweeperEvent, MinesweeperState> {
     }
   }
 
+  Future<void> _onResetMinesweeper(
+      MinesweeperResetEvent event, Emitter<MinesweeperState> emit) async {
+    try {
+      emit(MinesweeperLoading());
+      var result = await mineSweeperRepository.generateMinesweeper();
+      if (result != null) {
+        _currentPuzzle = result;
+        emit(MinesweeperGenerated(minesweeper: _currentPuzzle!));
+      }
+    } on DioException catch (e) {
+      emit(MinesweeperError(message: handleDioError(e)));
+    } on ServerException {
+      emit(MinesweeperError(
+          message: "There seems to be an issue connecting to the server"));
+    } catch (e) {
+      emit(MinesweeperError(message: e.toString()));
+    }
+  }
+
   void _onTapCell(
       MinesweeperCellTappedEvent event, Emitter<MinesweeperState> emit) {
     if (_currentPuzzle != null) {
@@ -71,13 +92,26 @@ class MinesweeperBloc extends HydratedBloc<MinesweeperEvent, MinesweeperState> {
       }).toList();
       if (event.isFlagged) {
         newBoard[event.row][event.column].cellState = CellState.flagged;
-      } else if (newBoard[event.row][event.column].cellState ==
-          CellState.hidden) {
+      } else if (!newBoard[event.row][event.column].hasMine &&
+          newBoard[event.row][event.column].cellState == CellState.hidden) {
         newBoard[event.row][event.column].cellState = CellState.revealed;
-      }
-      if (newBoard[event.row][event.column].hasMine &&
+        if (newBoard[event.row][event.column].adjacentMines == 0) {
+          newBoard = MinesweeperHelper.getAdjacentValues(
+              newBoard, event.row, event.column);
+        }
+        if (MinesweeperHelper.isGameWon(
+            board: newBoard,
+            mineCount: _currentPuzzle!.mines,
+            cellSize: _currentPuzzle!.width)) {
+          emit(GameWon());
+        }
+      } else if (newBoard[event.row][event.column].hasMine &&
           newBoard[event.row][event.column].cellState != CellState.flagged) {
-        emit(GameOver());
+        emit(GameOver(
+          cellSize: _currentPuzzle?.width ?? 8,
+          board: MinesweeperHelper.revealMines(
+              _currentPuzzle?.width ?? 8, _currentPuzzle!.board),
+        ));
         return;
       }
       final updatedPuzzle = _currentPuzzle!.copyWith(board: newBoard);

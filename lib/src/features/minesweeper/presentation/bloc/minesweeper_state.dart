@@ -20,12 +20,18 @@ final class MinesweeperGenerated extends MinesweeperState {
   List<Object> get props => [minesweeper];
 }
 
-final class MinesweeperCompleted extends MinesweeperState {
-  const MinesweeperCompleted();
+final class GameWon extends MinesweeperState {
+  const GameWon();
 }
 
 final class GameOver extends MinesweeperState {
-  const GameOver();
+  final List<List<Cell>> board;
+  final int cellSize;
+
+  const GameOver({required this.board, required this.cellSize});
+
+  @override
+  List<Object> get props => [board, cellSize];
 }
 
 final class MinesweeperError extends MinesweeperState {

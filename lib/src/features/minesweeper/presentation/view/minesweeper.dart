@@ -6,6 +6,7 @@ import 'package:flutter_games/src/core/utils/injections.dart';
 import 'package:flutter_games/src/features/features.dart';
 import 'package:flutter_games/src/features/minesweeper/data/repository/minesweeper_repository.dart';
 
+import '../../../../core/helper/minesweeper_helper.dart';
 import '../widget/widget.dart';
 
 class MinesweeperScreen extends StatefulWidget {
@@ -36,20 +37,12 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                mineSweeperBloc.add(MinesweeperResetEvent());
               },
               child: const Text('Try Again'),
             ),
           ],
         );
-      },
-    );
-  }
-
-  void _showHowToPlayDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const MinesweeperInstructionWidget();
       },
     );
   }
@@ -60,7 +53,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
       create: (context) => mineSweeperBloc,
       child: BlocListener<MinesweeperBloc, MinesweeperState>(
         listener: (context, state) {
-          if (state is MinesweeperCompleted) {
+          if (state is GameWon) {
             showDialog(
               context: context,
               barrierDismissible: false,
@@ -68,7 +61,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                 return SudokuDialogWidget(
                   onTap: () {
                     Navigator.pop(context);
-                    mineSweeperBloc.add(MinesweeperGenerateEvent());
+                    mineSweeperBloc.add(MinesweeperResetEvent());
                   },
                   buttonIcon: Icon(
                     Icons.celebration,
@@ -77,7 +70,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                   buttonTitle: "Play Again",
                   title: "Congratulations!",
                   message:
-                      "Well done! You've successfully completed the Sudoku puzzle. Every cell is correctly filled.",
+                      "Well done! You've successfully completed the Minesweeper.You found every mine correctly.",
                 );
               },
             );
@@ -103,9 +96,6 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
               },
             );
           }
-          if (state is GameOver) {
-            _showGameOverDialog();
-          }
         },
         child: Scaffold(
           appBar: AppBar(
@@ -116,12 +106,6 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                   .titleLarge!
                   .copyWith(fontWeight: FontWeight.bold),
             ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.info_outline),
-                onPressed: () => _showHowToPlayDialog(context),
-              ),
-            ],
           ),
           body: BlocBuilder<MinesweeperBloc, MinesweeperState>(
             builder: (context, state) {
@@ -157,7 +141,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                                 color: AppColors.red,
                               ),
                               title: Text(
-                                "0",
+                                "${MinesweeperHelper.getFlagCount(mineData.width, mineData.board)}",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
@@ -182,46 +166,74 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                           ),
                         ],
                       ),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: state.minesweeper.width,
-                        ),
-                        itemCount:
-                            state.minesweeper.width * state.minesweeper.height,
-                        itemBuilder: (context, index) {
-                          int row = index ~/ state.minesweeper.height;
-                          int col = index % state.minesweeper.height;
-                          return GridCell(
-                            onTap: () {
-                              mineSweeperBloc.add(MinesweeperCellTappedEvent(
-                                row: row,
-                                column: col,
-                              ));
-                            },
-                            onLongPress: () {
-                              mineSweeperBloc.add(
-                                MinesweeperCellTappedEvent(
-                                  row: row,
-                                  column: col,
-                                  isFlagged: true,
-                                ),
-                              );
-                            },
-                            cell: state.minesweeper.board[row][col],
-                          );
-                        },
+                      MineSweeperGrid(
+                        cellSize: mineData.width,
+                        board: mineData.board,
                       ),
                       MinesweeperInstructionWidget()
                     ],
                   ),
                 );
               }
-              return Padding(
+              return SingleChildScrollView(
                 padding:
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                child: MinesweeperInstructionWidget(),
+                child: Column(
+                  children: [
+                    if (state is GameOver)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Game Over",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          Row(
+                            children: [
+                              Image.asset(
+                                AppImages.bomb,
+                                width: 24,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'You hit a bomb!',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          MineSweeperGrid(
+                            cellSize: state.cellSize,
+                            board: state.board,
+                          ),
+                          Center(
+                            child: TextButton.icon(
+                              icon: Icon(
+                                Icons.sentiment_very_dissatisfied,
+                                color: AppColors.red,
+                              ),
+                              onPressed: () {
+                                mineSweeperBloc.add(MinesweeperResetEvent());
+                              },
+                              label: Text(
+                                'Try Again',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    MinesweeperInstructionWidget(),
+                  ],
+                ),
               );
             },
           ),
