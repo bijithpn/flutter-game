@@ -67,7 +67,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                     .copyWith(primaryColor: AppColors.primaryColor),
                 debugShowCheckedModeBanner: false,
                 navigatorKey: navigatorKey,
-                initialRoute: '/sudoku',
+                initialRoute: '/minesweeper',
               );
             },
           );

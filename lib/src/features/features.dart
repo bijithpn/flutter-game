@@ -1,5 +1,7 @@
 export 'error/presentation/error.dart';
 export 'home/presentation/home.dart';
+export 'minesweeper/presentation/bloc/minesweeper_bloc.dart';
+export 'minesweeper/presentation/view/minesweeper.dart';
 export 'sudoku/data/model/sudoku.dart';
 export 'sudoku/data/repository/sudoku_repository.dart';
 export 'sudoku/presentation/bloc/sudoku_bloc.dart';

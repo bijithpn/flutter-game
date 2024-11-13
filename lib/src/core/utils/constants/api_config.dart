@@ -7,4 +7,5 @@ class APIConfig {
 class APIEndpoint {
   static const String sudokuGenerator = 'sudoku/generator';
   static const String sudokuVerifier = 'sudoku/verifier';
+  static const String mineSweeperGenerator = 'minesweeper/generator';
 }

@@ -18,4 +18,6 @@ class AppImages {
   static const String sudoku = 'assets/pngs/sudoku.png';
   static const String takuzu = 'assets/pngs/takuzu.png';
   static const String wordsearch = 'assets/pngs/wordsearch.png';
+  static const String bomb = 'assets/pngs/bomb.png';
+  static const String tiles = 'assets/pngs/tiles.png';
 }

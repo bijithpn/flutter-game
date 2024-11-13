@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_games/src/core/styles/app_colors.dart';
 
 class SudokuCell extends StatelessWidget {
   SudokuCell({
     super.key,
     required this.controller,
+    required this.index,
     this.isPreFilled = false,
     this.updateCallback,
-    required this.index,
   });
 
   final TextEditingController controller;
@@ -17,6 +18,7 @@ class SudokuCell extends StatelessWidget {
   final VoidCallback? updateCallback;
 
   int backspace = 0;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

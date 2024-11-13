@@ -18,6 +18,11 @@ class AppRouter {
           settings: RouteSettings(name: settings.name),
           builder: (_) => const SudokuView(),
         );
+      case '/minesweeper':
+        return MaterialPageRoute(
+          settings: RouteSettings(name: settings.name),
+          builder: (_) => MinesweeperScreen(),
+        );
 
       case '/cardGame':
         return MaterialPageRoute(
