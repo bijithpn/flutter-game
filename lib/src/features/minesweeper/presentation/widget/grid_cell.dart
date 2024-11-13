@@ -44,28 +44,34 @@ class GridCell extends StatelessWidget {
             ),
             child: cell.cellState == CellState.revealed
                 ? (cell.hasMine
-                    ? Image.asset(
-                        AppImages.bomb,
-                        width: 25,
+                    ? FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Image.asset(
+                          AppImages.bomb,
+                          width: 25,
+                        ),
                       )
                     : cell.adjacentMines > 0
-                        ? Text(
-                            "${cell.adjacentMines}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primaryColor),
+                        ? FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              "${cell.adjacentMines}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primaryColor),
+                            ),
                           )
                         : SizedBox.shrink())
                 : SizedBox.shrink(),
           ),
           if (cell.cellState == CellState.flagged)
-            Icon(
-              Icons.flag,
+            Image.asset(
+              AppImages.flag,
+              width: 30,
               color: AppColors.red,
-              size: 40,
             ),
         ],
       ),

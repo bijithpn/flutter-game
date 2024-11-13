@@ -9,7 +9,18 @@ sealed class MinesweeperEvent extends Equatable {
 
 class MinesweeperLoadingEvent extends MinesweeperEvent {}
 
-class MinesweeperGenerateEvent extends MinesweeperEvent {}
+class MinesweeperGenerateEvent extends MinesweeperEvent {
+  final int boardWidth;
+  final int boardHeight;
+  final int mineCount;
+  final bool initiaLunch;
+
+  const MinesweeperGenerateEvent(
+      {this.boardWidth = 9,
+      this.boardHeight = 9,
+      this.mineCount = 10,
+      this.initiaLunch = false});
+}
 
 class MinesweeperCellTappedEvent extends MinesweeperEvent {
   const MinesweeperCellTappedEvent({

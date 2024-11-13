@@ -20,4 +20,5 @@ class AppImages {
   static const String wordsearch = 'assets/pngs/wordsearch.png';
   static const String bomb = 'assets/pngs/bomb.png';
   static const String tiles = 'assets/pngs/tiles.png';
+  static const String flag = 'assets/pngs/flag.png';
 }

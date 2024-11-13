@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_games/src/core/styles/app_colors.dart';
 import 'package:flutter_games/src/core/utils/constants/app_constants.dart';
@@ -22,7 +23,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   @override
   void initState() {
     mineSweeperBloc = MinesweeperBloc(sl<MineSweeperRepository>())
-      ..add(MinesweeperGenerateEvent());
+      ..add(MinesweeperGenerateEvent(initiaLunch: true));
     super.initState();
   }
 
@@ -40,6 +41,97 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                 mineSweeperBloc.add(MinesweeperResetEvent());
               },
               child: const Text('Try Again'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void customMineSweeper() {
+    int width = 0, height = 0, mines = 0;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Create a Custom Board',
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge!
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onChanged: (value) {
+                  if (value.isNotEmpty) {
+                    width = int.parse(value);
+                  }
+                },
+                decoration: InputDecoration(
+                    label: Text('Width',
+                        style: Theme.of(context).textTheme.bodyMedium)),
+              ),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onChanged: (value) {
+                  if (value.isNotEmpty) {
+                    height = int.parse(value);
+                  }
+                },
+                decoration: InputDecoration(
+                    label: Text('Height',
+                        style: Theme.of(context).textTheme.bodyMedium)),
+              ),
+              TextFormField(
+                textInputAction: TextInputAction.done,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onChanged: (value) {
+                  if (value.isNotEmpty) {
+                    mines = int.parse(value);
+                  }
+                },
+                onFieldSubmitted: (value) {
+                  Navigator.of(context).pop();
+                  mineSweeperBloc.add(MinesweeperGenerateEvent(
+                    boardWidth: width,
+                    boardHeight: height,
+                    mineCount: int.parse(value),
+                    initiaLunch: true,
+                  ));
+                },
+                decoration: InputDecoration(
+                    label: Text('Mines',
+                        style: Theme.of(context).textTheme.bodyMedium)),
+              )
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                mineSweeperBloc.add(MinesweeperGenerateEvent(
+                  boardWidth: width,
+                  boardHeight: height,
+                  mineCount: mines,
+                  initiaLunch: true,
+                ));
+              },
+              child: const Text('Create'),
             ),
           ],
         );
@@ -136,8 +228,9 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                           ),
                           Flexible(
                             child: ListTile(
-                              leading: Icon(
-                                Icons.flag,
+                              leading: Image.asset(
+                                AppImages.flag,
+                                width: 27,
                                 color: AppColors.red,
                               ),
                               title: Text(
@@ -237,6 +330,9 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
               );
             },
           ),
+          floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.dashboard_customize),
+              onPressed: () => customMineSweeper()),
         ),
       ),
     );

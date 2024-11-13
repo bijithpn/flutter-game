@@ -67,16 +67,25 @@ class MinesweeperInstructionWidget extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            'Legend:',
+            'Icons:',
             style: subTitleStyle,
           ),
           const SizedBox(height: 10),
           Row(
             children: [
-              Icon(
-                Icons.flag,
-                color: AppColors.red,
-                size: 28,
+              Container(
+                width: 28,
+                height: 28,
+                padding: EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Image.asset(
+                  AppImages.flag,
+                  width: 28,
+                  color: AppColors.red,
+                ),
               ),
               const SizedBox(width: 8),
               Text('Flagged cell (suspected bomb)', style: bodyBoldStyle),
@@ -85,9 +94,18 @@ class MinesweeperInstructionWidget extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              Image.asset(
-                AppImages.bomb,
+              Container(
                 width: 28,
+                height: 28,
+                padding: EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  color: AppColors.red,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Image.asset(
+                  AppImages.bomb,
+                  width: 28,
+                ),
               ),
               const SizedBox(width: 8),
               Text('Bomb (game over if revealed)', style: bodyBoldStyle),
@@ -96,10 +114,24 @@ class MinesweeperInstructionWidget extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              Icon(
-                Icons.check_box_outline_blank,
-                color: Colors.grey,
-                size: 28,
+              Container(
+                width: 28,
+                height: 28,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.secondaryColor,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: Colors.black),
+                ),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    "1",
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryColor),
+                  ),
+                ),
               ),
               const SizedBox(width: 8),
               Text('Safe cell (revealed)', style: bodyBoldStyle),

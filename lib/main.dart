@@ -63,8 +63,13 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                 scaffoldMessengerKey: snackBarKey,
                 onGenerateRoute: AppRouter.generateRoute,
                 // theme: Helper.isDarkTheme() ? darkAppTheme : appTheme,
-                theme: ThemeData.dark()
-                    .copyWith(primaryColor: AppColors.primaryColor),
+                theme: ThemeData.dark().copyWith(
+                    colorScheme: ColorScheme.dark(
+                      primary: AppColors.primaryColor,
+                      secondary: AppColors.secondaryColor,
+                      surface: AppColors.scaffoldBackground,
+                    ),
+                    primaryColor: AppColors.primaryColor),
                 debugShowCheckedModeBanner: false,
                 navigatorKey: navigatorKey,
                 initialRoute: '/minesweeper',

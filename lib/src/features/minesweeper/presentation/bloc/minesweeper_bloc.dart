@@ -45,12 +45,16 @@ class MinesweeperBloc extends HydratedBloc<MinesweeperEvent, MinesweeperState> {
   Future<void> _onGenerateMinesweeper(
       MinesweeperGenerateEvent event, Emitter<MinesweeperState> emit) async {
     try {
-      if (_currentPuzzle != null) {
+      if (!event.initiaLunch && _currentPuzzle != null) {
         emit(MinesweeperGenerated(minesweeper: _currentPuzzle!));
         return;
       }
       emit(MinesweeperLoading());
-      var result = await mineSweeperRepository.generateMinesweeper();
+      var result = await mineSweeperRepository.generateMinesweeper(
+        width: event.boardWidth,
+        height: event.boardHeight,
+        mines: event.mineCount,
+      );
       if (result != null) {
         _currentPuzzle = result;
         emit(MinesweeperGenerated(minesweeper: _currentPuzzle!));
