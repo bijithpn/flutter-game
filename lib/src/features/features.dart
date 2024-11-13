@@ -9,7 +9,6 @@ export 'sudoku/presentation/view/sudoku.dart';
 export 'sudoku/presentation/widgets/instruction_widget.dart';
 export 'sudoku/presentation/widgets/sudoku_appbar_widget.dart';
 export 'sudoku/presentation/widgets/sudoku_cell.dart';
-export 'sudoku/presentation/widgets/sudoku_dialog_widget.dart';
 export 'sudoku/presentation/widgets/sudoku_grid.dart';
 export 'sudoku/presentation/widgets/widgets.dart';
 export 'sudoku/sudoku_injection.dart';

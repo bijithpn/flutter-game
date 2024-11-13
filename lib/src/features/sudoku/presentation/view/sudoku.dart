@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_games/src/core/helper/sudoku_helper.dart';
@@ -5,6 +8,8 @@ import 'package:flutter_games/src/core/utils/injections.dart';
 import 'package:flutter_games/src/features/sudoku/data/repository/sudoku_repository.dart';
 import 'package:flutter_games/src/features/sudoku/presentation/bloc/sudoku_bloc.dart';
 import 'package:flutter_games/src/features/sudoku/presentation/widgets/widgets.dart';
+
+import '../../../widgets/widgets.dart';
 
 class SudokuView extends StatefulWidget {
   const SudokuView({super.key});
@@ -19,14 +24,25 @@ class _SudokuViewState extends State<SudokuView> {
     (_) => List.generate(9, (_) => TextEditingController()),
   );
   late SudokuBloc sudokuBloc;
+  late ConfettiController _controllerCenterRight;
+  late ConfettiController _controllerCenterLeft;
+  late ConfettiController _controllerCenter;
   @override
   void initState() {
     sudokuBloc = SudokuBloc(sl<SudokuRepository>())..add(SudokuGenerateEvent());
+    _controllerCenter =
+        ConfettiController(duration: const Duration(seconds: 5));
+    _controllerCenterRight =
+        ConfettiController(duration: const Duration(seconds: 5));
+    _controllerCenterLeft =
+        ConfettiController(duration: const Duration(seconds: 5));
     super.initState();
   }
 
   @override
   void dispose() {
+    _controllerCenterRight.dispose();
+    _controllerCenterLeft.dispose();
     for (var row in controllers) {
       for (var controller in row) {
         controller.dispose();
@@ -42,23 +58,50 @@ class _SudokuViewState extends State<SudokuView> {
       child: BlocListener<SudokuBloc, SudokuState>(
         listener: (context, state) {
           if (state is SudokuCompleted) {
+            _controllerCenter.play();
+            _controllerCenterLeft.play();
+            _controllerCenterRight.play();
             showDialog(
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return SudokuDialogWidget(
-                  onTap: () {
-                    Navigator.pop(context);
-                    sudokuBloc.add(SudokuGenerateEvent());
-                  },
-                  buttonIcon: Icon(
-                    Icons.celebration,
-                    color: Colors.black,
-                  ),
-                  buttonTitle: "Play Again",
-                  title: "Congratulations!",
-                  message:
-                      "Well done! You've successfully completed the Sudoku puzzle. Every cell is correctly filled.",
+                return Stack(
+                  children: [
+                    DialogWidget(
+                      onTap: () {
+                        Navigator.pop(context);
+                        sudokuBloc.add(SudokuGenerateEvent());
+                      },
+                      buttonIcon: Icon(
+                        Icons.celebration,
+                        color: Colors.black,
+                      ),
+                      buttonTitle: "Play Again",
+                      title: "Congratulations!",
+                      message:
+                          "Well done! You've successfully completed the Sudoku puzzle. Every cell is correctly filled.",
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Confetti(
+                        confettiController: _controllerCenter,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Confetti(
+                        confettiController: _controllerCenterRight,
+                        blastDirection: pi,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Confetti(
+                        confettiController: _controllerCenterLeft,
+                        blastDirection: 0,
+                      ),
+                    ),
+                  ],
                 );
               },
             );
@@ -68,7 +111,7 @@ class _SudokuViewState extends State<SudokuView> {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return SudokuDialogWidget(
+                return DialogWidget(
                   title: "Oops!",
                   message: state.message,
                   buttonIcon: Icon(
@@ -89,7 +132,7 @@ class _SudokuViewState extends State<SudokuView> {
               context: context,
               barrierDismissible: true,
               builder: (BuildContext context) {
-                return SudokuDialogWidget(
+                return DialogWidget(
                     onTap: () {
                       Navigator.pop(context);
                     },

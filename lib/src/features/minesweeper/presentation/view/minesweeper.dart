@@ -1,6 +1,10 @@
+import 'dart:math';
+
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_games/src/core/styles/app_colors.dart';
 import 'package:flutter_games/src/core/utils/constants/app_constants.dart';
 import 'package:flutter_games/src/core/utils/injections.dart';
@@ -8,6 +12,7 @@ import 'package:flutter_games/src/features/features.dart';
 import 'package:flutter_games/src/features/minesweeper/data/repository/minesweeper_repository.dart';
 
 import '../../../../core/helper/minesweeper_helper.dart';
+import '../../../widgets/widgets.dart';
 import '../widget/widget.dart';
 
 class MinesweeperScreen extends StatefulWidget {
@@ -19,33 +24,29 @@ class MinesweeperScreen extends StatefulWidget {
 
 class _MinesweeperScreenState extends State<MinesweeperScreen> {
   late MinesweeperBloc mineSweeperBloc;
-
+  late ConfettiController _controllerCenterRight;
+  late ConfettiController _controllerCenterLeft;
+  late ConfettiController _controllerCenter;
   @override
   void initState() {
     mineSweeperBloc = MinesweeperBloc(sl<MineSweeperRepository>())
       ..add(MinesweeperGenerateEvent(initiaLunch: true));
+
+    _controllerCenter =
+        ConfettiController(duration: const Duration(seconds: 5));
+    _controllerCenterRight =
+        ConfettiController(duration: const Duration(seconds: 5));
+    _controllerCenterLeft =
+        ConfettiController(duration: const Duration(seconds: 5));
     super.initState();
   }
 
-  void _showGameOverDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Game Over'),
-          content: const Text('You hit a bomb!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                mineSweeperBloc.add(MinesweeperResetEvent());
-              },
-              child: const Text('Try Again'),
-            ),
-          ],
-        );
-      },
-    );
+  @override
+  void dispose() {
+    _controllerCenterRight.dispose();
+    _controllerCenterLeft.dispose();
+
+    super.dispose();
   }
 
   void customMineSweeper() {
@@ -146,23 +147,51 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
       child: BlocListener<MinesweeperBloc, MinesweeperState>(
         listener: (context, state) {
           if (state is GameWon) {
+            _controllerCenter.play();
+            _controllerCenterLeft.play();
+            _controllerCenterRight.play();
             showDialog(
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return SudokuDialogWidget(
-                  onTap: () {
-                    Navigator.pop(context);
-                    mineSweeperBloc.add(MinesweeperResetEvent());
-                  },
-                  buttonIcon: Icon(
-                    Icons.celebration,
-                    color: Colors.black,
-                  ),
-                  buttonTitle: "Play Again",
-                  title: "Congratulations!",
-                  message:
-                      "Well done! You've successfully completed the Minesweeper.You found every mine correctly.",
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    DialogWidget(
+                      onTap: () {
+                        Navigator.pop(context);
+                        mineSweeperBloc.add(MinesweeperResetEvent());
+                      },
+                      buttonIcon: Icon(
+                        Icons.celebration,
+                        color: Colors.black,
+                      ),
+                      buttonTitle: "Play Again",
+                      title: "Congratulations!",
+                      message:
+                          "Well done! You've successfully completed the Minesweeper.You found every mine correctly.",
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Confetti(
+                        confettiController: _controllerCenter,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Confetti(
+                        confettiController: _controllerCenterRight,
+                        blastDirection: pi,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Confetti(
+                        confettiController: _controllerCenterLeft,
+                        blastDirection: 0,
+                      ),
+                    ),
+                  ],
                 );
               },
             );
@@ -172,7 +201,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return SudokuDialogWidget(
+                return DialogWidget(
                   title: "Oops!",
                   message: state.message,
                   buttonIcon: Icon(
@@ -332,7 +361,11 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
           ),
           floatingActionButton: FloatingActionButton(
               child: Icon(Icons.dashboard_customize),
-              onPressed: () => customMineSweeper()),
+              onPressed: () => {
+                    _controllerCenter.play(),
+                    _controllerCenterLeft.play(),
+                    _controllerCenterRight.play(),
+                  }),
         ),
       ),
     );

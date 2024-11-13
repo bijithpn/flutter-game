@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_games/src/core/styles/app_colors.dart';
 
-class SudokuDialogWidget extends StatelessWidget {
+class DialogWidget extends StatelessWidget {
   final String title;
   final String message;
   final String buttonTitle;
   final VoidCallback? onTap;
   final Widget buttonIcon;
-  const SudokuDialogWidget({
+  const DialogWidget({
     super.key,
     this.title = 'Opps!',
     this.buttonIcon = const Icon(Icons.refresh),
